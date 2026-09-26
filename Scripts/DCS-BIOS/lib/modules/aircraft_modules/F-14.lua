@@ -1812,11 +1812,19 @@ end, 4, AAI, "Interrogator Code")
 
 -- DFCS
 
+local cmds_display = ""
+local tis = {
+	line1 = "",
+	line2 = "",
+}
 local dfcs_fault = ""
 
 -- this one indication has data for a few different areas
 F_14:addExportHook(function(_)
 	local ale47_indicator = Module.parse_indication(33)
+	cmds_display = ale47_indicator and ale47_indicator[4] or ""
+	tis.line1 = ale47_indicator and ale47_indicator[5] or ""
+	tis.line2 = ale47_indicator and ale47_indicator[6] or ""
 	dfcs_fault = ale47_indicator and ale47_indicator[7] or ""
 end)
 
@@ -1826,5 +1834,240 @@ F_14:definePushButton("PLT_DFCS_FAULT_INC", devices.AFCS, 3104, 2132, "SAS", "DF
 F_14:defineString("PLT_DFCS_FAULT_DISPLAY", function(_)
 	return dfcs_fault
 end, 4, "SAS", "Fault Display")
+
+local TIS = "TIS"
+
+F_14:definePushButton("RIO_TIS_RCU1", devices.TACTICAL_IMAGING_SET, 3938, 885, TIS, "RCU 1")
+F_14:definePushButton("RIO_TIS_RCU2", devices.TACTICAL_IMAGING_SET, 3939, 886, TIS, "RCU 2")
+F_14:definePushButton("RIO_TIS_RCU3", devices.TACTICAL_IMAGING_SET, 3940, 887, TIS, "RCU 3")
+F_14:definePushButton("RIO_TIS_RCU4", devices.TACTICAL_IMAGING_SET, 3941, 888, TIS, "RCU 4")
+F_14:definePushButton("RIO_TIS_RCU5", devices.TACTICAL_IMAGING_SET, 3942, 889, TIS, "RCU 5")
+F_14:definePushButton("RIO_TIS_RCU6", devices.TACTICAL_IMAGING_SET, 3943, 890, TIS, "RCU 6")
+F_14:defineString("RIO_TIS_LINE1", function(_)
+	return tis.line1
+end, 24, TIS, "Display Line 1")
+F_14:defineString("RIO_TIS_LINE2", function(_)
+	return tis.line2
+end, 24, TIS, "Display Line 2")
+
+local ALE_47 = "ALE-47"
+
+F_14:definePushButton("RIO_ALE_47_INHIBIT_01", devices.COUNTERMEASURES, 3920, 872, ALE_47, "Inhibit 01")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_02", devices.COUNTERMEASURES, 3921, 873, ALE_47, "Inhibit 02")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_CHAFF", devices.COUNTERMEASURES, 3922, 874, ALE_47, "Inhibit Chaff")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_FLARE", devices.COUNTERMEASURES, 3923, 875, ALE_47, "Inhibit Flare")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_RWR", devices.COUNTERMEASURES, 3924, 876, ALE_47, "Inhibit RWR")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_MWS", devices.COUNTERMEASURES, 3925, 877, ALE_47, "Inhibit MWS")
+F_14:definePushButton("RIO_ALE_47_INHIBIT_JMR", devices.COUNTERMEASURES, 3926, 878, ALE_47, "Inhibit JMR")
+F_14:definePushButton("RIO_ALE_47_ENTER_BIT", devices.COUNTERMEASURES, 3927, 879, ALE_47, "Enter / BIT")
+
+F_14:defineMultipositionSwitch("RIO_ALE_47_MODE", devices.COUNTERMEASURES, 3918, 880, 6, 0.2, ALE_47, "Mode", { positions = { "OFF", "STBY", "MAN", "SEMI", "AUTO", "BYP" } })
+F_14:defineMultipositionSwitch("RIO_ALE_47_MANUAL", devices.COUNTERMEASURES, 3919, 881, 5, 0.25, ALE_47, "Manual", { positions = { "1", "2", "3", "4", "PRG" } })
+
+F_14:defineToggleSwitch("RIO_ALE_47_JETTISON", devices.COUNTERMEASURES, 3928, 871, ALE_47, "Jettison")
+F_14:defineToggleSwitch("RIO_ALE_47_JETTISON_COVER", devices.COUNTERMEASURES, 3929, 870, ALE_47, "Jettison Cover", { positions = CommonPositions.COVER })
+F_14:defineToggleSwitch("RIO_ALE_47_GND_TEST", devices.COUNTERMEASURES, 3931, 884, ALE_47, "Ground Test")
+F_14:defineToggleSwitch("RIO_ALE_47_GND_TEST_COVER", devices.COUNTERMEASURES, 3932, 883, ALE_47, "Ground Test Cover", { positions = CommonPositions.COVER })
+
+F_14:definePotentiometer("RIO_ALE_47_BRIGHTNESS_KNOB", devices.COUNTERMEASURES, 3930, 882, { 0, 1 }, ALE_47, "Brightness Knob")
+
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_01_LIGHT", 965, 0.5, nil, ALE_47, "Inhibit 01 Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_02_LIGHT", 966, 0.5, nil, ALE_47, "Inhibit 02 Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_CHAFF_LIGHT", 967, 0.5, nil, ALE_47, "Inhibit Chaff Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_FLARE_LIGHT", 968, 0.5, nil, ALE_47, "Inhibit Flare Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_RWR_LIGHT", 969, 0.5, nil, ALE_47, "Inhibit RWR Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_MWS_LIGHT", 970, 0.5, nil, ALE_47, "Inhibit MWS Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_47_INHIBIT_JMR_LIGHT", 971, 0.5, nil, ALE_47, "Inhibit JMR Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_READY_LIGHT", 972, 0.5, nil, ALE_47, "READY Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_GO_LIGHT", 973, 0.5, nil, ALE_47, "GO Light", { color = "green" })
+F_14:defineGatedIndicatorLight("RIO_ALE_NO_LIGHT", 973, 0.9, nil, ALE_47, "NO Light", { color = "green" })
+
+F_14:defineFloat("RIO_ALE_47_BRIGHTNESS", 974, { 0, 1 }, ALE_47, "CMDS Brightness")
+
+F_14:defineString("RIO_ALE_47_DISPLAY", function(_)
+	return cmds_display
+end, 16, ALE_47, "ALE-47 Display")
+
+local PTID = "PTID"
+
+F_14:definePushButton("RIO_PTID_LSK_1", devices.TID, 3915, 775, PTID, "LSK 1 (PB20)")
+F_14:definePushButton("RIO_PTID_LSK_2", devices.TID, 3914, 776, PTID, "LSK 2 (PB19)")
+F_14:definePushButton("RIO_PTID_LSK_3", devices.TID, 3913, 777, PTID, "LSK 3 (PB18)")
+F_14:definePushButton("RIO_PTID_LSK_4", devices.TID, 3912, 778, PTID, "LSK 4 (PB17)")
+F_14:definePushButton("RIO_PTID_LSK_5", devices.TID, 3911, 779, PTID, "LSK 5 (PB16)")
+F_14:definePushButton("RIO_PTID_LSK_6", devices.TID, 3910, 780, PTID, "LSK 6 (PB15)")
+F_14:definePushButton("RIO_PTID_LSK_7", devices.TID, 3909, 781, PTID, "LSK 7 (PB14)")
+F_14:definePushButton("RIO_PTID_RSK_1", devices.TID, 3896, 782, PTID, "RSK 1 (PB1)")
+F_14:definePushButton("RIO_PTID_RSK_2", devices.TID, 3897, 783, PTID, "RSK 2 (PB2)")
+F_14:definePushButton("RIO_PTID_RSK_3", devices.TID, 3898, 784, PTID, "RSK 3 (PB3)")
+F_14:definePushButton("RIO_PTID_RSK_4", devices.TID, 3899, 785, PTID, "RSK 4 (PB4)")
+F_14:definePushButton("RIO_PTID_RSK_5", devices.TID, 3900, 786, PTID, "RSK 5 (PB5)")
+F_14:definePushButton("RIO_PTID_RSK_6", devices.TID, 3901, 787, PTID, "RSK 6 (PB6)")
+F_14:definePushButton("RIO_PTID_RSK_7", devices.TID, 3902, 788, PTID, "RSK 7 (PB7)")
+F_14:definePushButton("RIO_PTID_BSK_1", devices.TID, 3908, 789, PTID, "BSK 1 (PB13)")
+F_14:definePushButton("RIO_PTID_BSK_2", devices.TID, 3907, 790, PTID, "BSK 2 (PB12)")
+F_14:definePushButton("RIO_PTID_BSK_3", devices.TID, 3906, 791, PTID, "BSK 3 (PB11)")
+F_14:definePushButton("RIO_PTID_BSK_4", devices.TID, 3905, 792, PTID, "BSK 4 (PB10)")
+F_14:definePushButton("RIO_PTID_BSK_5", devices.TID, 3904, 793, PTID, "BSK 5 (PB9)")
+F_14:definePushButton("RIO_PTID_BSK_6", devices.TID, 3903, 794, PTID, "BSK 6 (PB8)")
+
+F_14:defineMultipositionSwitch("RIO_PTID_NAV_MODE", devices.INS, 3106, 769, 6, 0.2, PTID, "Navigation Mode", { positions = { "OFF", "GND", "CVA", "INS", "AHRS", "IMU" } })
+F_14:defineMultipositionSwitch("RIO_PTID_POWER", devices.TID, 3895, 773, 4, 1 / 3, PTID, "Power", { positions = { "OFF", "NIGHT", "AUTO", "DAY" } })
+
+F_14:definePotentiometer("RIO_PTID_RASTER_BRIGHTNESS", devices.TID, 3894, 770, { 0, 1 }, PTID, "Raster Brightness")
+F_14:definePotentiometer("RIO_PTID_STROKE_BRIGHTNESS", devices.TID, 3124, 771, { 0, 1 }, PTID, "Stroke Brightness")
+F_14:definePotentiometer("RIO_PTID_CONTRAST", devices.TID, 3125, 772, { 0, 1 }, PTID, "Contrast")
+
+F_14:definePushButton("RIO_PTID_TCS", devices.TID, 3916, 682, PTID, "TCS Video")
+F_14:defineGatedIndicatorLight("RIO_PTID_TCS_LIGHT", 683, 0.5, nil, PTID, "TCS Video Enabled", { color = "green" })
+F_14:definePushButton("RIO_PTID_JAM_STROBE", devices.TID, 3115, 1118, PTID, "Jam Strobe")
+F_14:defineGatedIndicatorLight("RIO_PTID_JAM_STROBE_LIGHT", 6131, 0.5, nil, PTID, "Jam Strobe Enabled", { color = "green" })
+F_14:definePushButton("RIO_PTID_LAUNCH_ZONE", devices.TID, 3120, 2113, PTID, "Launch Zone")
+F_14:defineGatedIndicatorLight("RIO_PTID_LAUNCH_ZONE_LIGHT", 6133, 0.5, nil, PTID, "Launch Zone Enabled", { color = "green" })
+
+-- unclear if this should be a control, but there doesn't seem to be any way to control it
+F_14:defineFloat("RIO_PTID_FAULT", 774, { 0, 1 }, PTID, "Fault Knob")
+
+-- the base model has an ECMD panel with similar controls, similarly positioned
+-- but mode is a 2-pos switch on the right, whereas here it's a 3-pos on the left
+local ECMD = "ECMD (Upgrade)"
+
+F_14:defineToggleSwitch("RIO_ECMD_LETHAL_RNG", devices.ECMD, 3249, 869, ECMD, "Display Lethal Rings")
+F_14:define3PosTumb("RIO_ECMD_OVERRIDE", devices.ECMD, 3248, 867, ECMD, "Display Override", { positions = { "BIT", "OFF", "ECM" } })
+F_14:define3PosTumb("RIO_ECMD_MODE", devices.ECMD, 3247, 866, ECMD, "Display Mode", { positions = { "TID", "NAV", "ECM" } })
+F_14:define3PosTumb("RIO_ECMD_OPTION", devices.ECMD, 3250, 868, ECMD, "Display Option", { positions = { "NORM", "1", "2" } })
+
+local CDNU = "CDNU"
+
+F_14:definePotentiometer("RIO_CDNU_BRIGHTNESS", devices.CDNU, 3068, 806, { 0, 1 }, CDNU, "CDNU Brightness")
+F_14:defineToggleSwitch("RIO_CDNU_POWER", devices.CDNU, 3069, 797, CDNU, "Power")
+
+F_14:definePushButton("RIO_CDNU_KEY_F1", devices.CDNU, 3037, 807, CDNU, "F1")
+F_14:definePushButton("RIO_CDNU_KEY_F2", devices.CDNU, 3038, 808, CDNU, "F2")
+F_14:definePushButton("RIO_CDNU_KEY_F3", devices.CDNU, 3039, 809, CDNU, "F3")
+F_14:definePushButton("RIO_CDNU_KEY_F4", devices.CDNU, 3040, 810, CDNU, "F4")
+F_14:definePushButton("RIO_CDNU_KEY_F5", devices.CDNU, 3041, 811, CDNU, "F5")
+F_14:definePushButton("RIO_CDNU_KEY_F6", devices.CDNU, 3042, 812, CDNU, "F6")
+F_14:definePushButton("RIO_CDNU_KEY_F7", devices.CDNU, 3043, 813, CDNU, "F7")
+F_14:definePushButton("RIO_CDNU_KEY_MENU", devices.CDNU, 3044, 814, CDNU, "MENU")
+F_14:definePushButton("RIO_CDNU_LSK_1", devices.CDNU, 3060, 798, CDNU, "LSK 1")
+F_14:definePushButton("RIO_CDNU_LSK_2", devices.CDNU, 3061, 799, CDNU, "LSK 2")
+F_14:definePushButton("RIO_CDNU_LSK_3", devices.CDNU, 3062, 800, CDNU, "LSK 3")
+F_14:definePushButton("RIO_CDNU_LSK_4", devices.CDNU, 3063, 801, CDNU, "LSK 4")
+F_14:definePushButton("RIO_CDNU_RSK_1", devices.CDNU, 3064, 802, CDNU, "RSK 1")
+F_14:definePushButton("RIO_CDNU_RSK_2", devices.CDNU, 3065, 803, CDNU, "RSK 2")
+F_14:definePushButton("RIO_CDNU_RSK_3", devices.CDNU, 3066, 804, CDNU, "RSK 3")
+F_14:definePushButton("RIO_CDNU_RSK_4", devices.CDNU, 3067, 805, CDNU, "RSK 4")
+F_14:definePushButton("RIO_CDNU_ARROW_LEFT", devices.CDNU, 3047, 853, CDNU, "ARROW LEFT")
+F_14:definePushButton("RIO_CDNU_ARROW_RIGHT", devices.CDNU, 3048, 854, CDNU, "ARROW RIGHT")
+F_14:definePushButton("RIO_CDNU_ARROW_UP", devices.CDNU, 3045, 851, CDNU, "ARROW UP")
+F_14:definePushButton("RIO_CDNU_ARROW_DOWN", devices.CDNU, 3046, 852, CDNU, "ARROW DOWN")
+F_14:definePushButton("RIO_CDNU_SPEC_PERIOD", devices.CDNU, 3049, 855, CDNU, "PERIOD")
+F_14:definePushButton("RIO_CDNU_SPEC_HYPHEN", devices.CDNU, 3050, 856, CDNU, "HYPHEN")
+F_14:definePushButton("RIO_CDNU_SPEC_SLASH", devices.CDNU, 3051, 857, CDNU, "SLASH")
+F_14:definePushButton("RIO_CDNU_FUNC_RNAV", devices.CDNU, 3052, 858, CDNU, "RNAV")
+F_14:definePushButton("RIO_CDNU_FUNC_STAT", devices.CDNU, 3053, 859, CDNU, "STAT")
+F_14:definePushButton("RIO_CDNU_SPEC_CLR", devices.CDNU, 3054, 860, CDNU, "CLR")
+F_14:definePushButton("RIO_CDNU_FUNC_IDX", devices.CDNU, 3055, 861, CDNU, "IDX")
+F_14:definePushButton("RIO_CDNU_FUNC_FPLN", devices.CDNU, 3056, 862, CDNU, "FPLAN")
+F_14:definePushButton("RIO_CDNU_FUNC_PROG", devices.CDNU, 3057, 863, CDNU, "PROG")
+F_14:definePushButton("RIO_CDNU_FUNC_DIR", devices.CDNU, 3058, 864, CDNU, "DIR")
+F_14:definePushButton("RIO_CDNU_FUNC_MARK", devices.CDNU, 3059, 865, CDNU, "MARK")
+F_14:definePushButton("RIO_CDNU_NUM_0", devices.CDNU, 3001, 815, CDNU, "0")
+F_14:definePushButton("RIO_CDNU_NUM_1", devices.CDNU, 3002, 816, CDNU, "1")
+F_14:definePushButton("RIO_CDNU_NUM_2", devices.CDNU, 3003, 817, CDNU, "2")
+F_14:definePushButton("RIO_CDNU_NUM_3", devices.CDNU, 3004, 818, CDNU, "3")
+F_14:definePushButton("RIO_CDNU_NUM_4", devices.CDNU, 3005, 819, CDNU, "4")
+F_14:definePushButton("RIO_CDNU_NUM_5", devices.CDNU, 3006, 820, CDNU, "5")
+F_14:definePushButton("RIO_CDNU_NUM_6", devices.CDNU, 3007, 821, CDNU, "6")
+F_14:definePushButton("RIO_CDNU_NUM_7", devices.CDNU, 3008, 822, CDNU, "7")
+F_14:definePushButton("RIO_CDNU_NUM_8", devices.CDNU, 3009, 823, CDNU, "8")
+F_14:definePushButton("RIO_CDNU_NUM_9", devices.CDNU, 3010, 824, CDNU, "9")
+F_14:definePushButton("RIO_CDNU_KEY_A", devices.CDNU, 3011, 825, CDNU, "A")
+F_14:definePushButton("RIO_CDNU_KEY_B", devices.CDNU, 3012, 826, CDNU, "B")
+F_14:definePushButton("RIO_CDNU_KEY_C", devices.CDNU, 3013, 827, CDNU, "C")
+F_14:definePushButton("RIO_CDNU_KEY_D", devices.CDNU, 3014, 828, CDNU, "D")
+F_14:definePushButton("RIO_CDNU_KEY_E", devices.CDNU, 3015, 829, CDNU, "E")
+F_14:definePushButton("RIO_CDNU_KEY_F", devices.CDNU, 3016, 830, CDNU, "F")
+F_14:definePushButton("RIO_CDNU_KEY_G", devices.CDNU, 3017, 831, CDNU, "G")
+F_14:definePushButton("RIO_CDNU_KEY_H", devices.CDNU, 3018, 832, CDNU, "H")
+F_14:definePushButton("RIO_CDNU_KEY_I", devices.CDNU, 3019, 833, CDNU, "I")
+F_14:definePushButton("RIO_CDNU_KEY_J", devices.CDNU, 3020, 834, CDNU, "J")
+F_14:definePushButton("RIO_CDNU_KEY_K", devices.CDNU, 3021, 835, CDNU, "K")
+F_14:definePushButton("RIO_CDNU_KEY_L", devices.CDNU, 3022, 836, CDNU, "L")
+F_14:definePushButton("RIO_CDNU_KEY_M", devices.CDNU, 3023, 837, CDNU, "M")
+F_14:definePushButton("RIO_CDNU_KEY_N", devices.CDNU, 3024, 838, CDNU, "N")
+F_14:definePushButton("RIO_CDNU_KEY_O", devices.CDNU, 3025, 839, CDNU, "O")
+F_14:definePushButton("RIO_CDNU_KEY_P", devices.CDNU, 3026, 840, CDNU, "P")
+F_14:definePushButton("RIO_CDNU_KEY_Q", devices.CDNU, 3027, 841, CDNU, "Q")
+F_14:definePushButton("RIO_CDNU_KEY_R", devices.CDNU, 3028, 842, CDNU, "R")
+F_14:definePushButton("RIO_CDNU_KEY_S", devices.CDNU, 3029, 843, CDNU, "S")
+F_14:definePushButton("RIO_CDNU_KEY_T", devices.CDNU, 3030, 844, CDNU, "T")
+F_14:definePushButton("RIO_CDNU_KEY_U", devices.CDNU, 3031, 845, CDNU, "U")
+F_14:definePushButton("RIO_CDNU_KEY_V", devices.CDNU, 3032, 846, CDNU, "V")
+F_14:definePushButton("RIO_CDNU_KEY_W", devices.CDNU, 3033, 847, CDNU, "W")
+F_14:definePushButton("RIO_CDNU_KEY_X", devices.CDNU, 3034, 848, CDNU, "X")
+F_14:definePushButton("RIO_CDNU_KEY_Y", devices.CDNU, 3035, 849, CDNU, "Y")
+F_14:definePushButton("RIO_CDNU_KEY_Z", devices.CDNU, 3036, 850, CDNU, "Z")
+
+local cdnu_replace_map = {
+	[string.char(0x10)] = string.char(0xBB), -- → replaced with »
+	[string.char(0x0F)] = string.char(0xAB), -- ← replaced with «
+	[string.char(0x11)] = string.char(0xA9), -- ↔ replaced with ©
+	[string.char(0x12)] = string.char(0xAE), -- ↕ replaced with ®
+	[string.char(0x0E)] = string.char(0xB0), -- °
+	[string.char(0x15)] = "{", -- ↑ replaced with {
+	[string.char(0x16)] = "}", -- ↓ replaced with }
+}
+
+local function replace_cdnu_chars(line)
+	if not line then
+		return ""
+	end
+
+	local replacement = ""
+	for i = 1, #line do
+		local ch = line:sub(i, i)
+		replacement = replacement .. (cdnu_replace_map[ch] or ch)
+	end
+	return replacement
+end
+
+local cdnu_lines = { "", "", "", "", "", "", "", "" }
+
+F_14:addExportHook(function(_)
+	local display = Module.parse_indication(28)
+
+	for i = 1, 8 do
+		cdnu_lines[i] = display and replace_cdnu_chars(display[i + 5]) or ""
+	end
+end)
+
+local CDNU_LINE_LENGTH = 22
+
+F_14:defineString("RIO_CDNU_LINE1", function(_)
+	return cdnu_lines[1]
+end, CDNU_LINE_LENGTH, CDNU, "Line 1")
+F_14:defineString("RIO_CDNU_LINE2", function(_)
+	return cdnu_lines[2]
+end, CDNU_LINE_LENGTH, CDNU, "Line 2")
+F_14:defineString("RIO_CDNU_LINE3", function(_)
+	return cdnu_lines[3]
+end, CDNU_LINE_LENGTH, CDNU, "Line 3")
+F_14:defineString("RIO_CDNU_LINE4", function(_)
+	return cdnu_lines[4]
+end, CDNU_LINE_LENGTH, CDNU, "Line 4")
+F_14:defineString("RIO_CDNU_LINE5", function(_)
+	return cdnu_lines[5]
+end, CDNU_LINE_LENGTH, CDNU, "Line 5")
+F_14:defineString("RIO_CDNU_LINE6", function(_)
+	return cdnu_lines[6]
+end, CDNU_LINE_LENGTH, CDNU, "Line 6")
+F_14:defineString("RIO_CDNU_LINE7", function(_)
+	return cdnu_lines[7]
+end, CDNU_LINE_LENGTH, CDNU, "Line 7")
+F_14:defineString("RIO_CDNU_LINE8", function(_)
+	return cdnu_lines[8]
+end, CDNU_LINE_LENGTH, CDNU, "Line 8")
 
 return F_14
